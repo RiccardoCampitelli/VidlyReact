@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 
+import { Link } from "react-router-dom";
 import ListFilter from "./common/listFilter";
 import Pagination from "./common/pagination";
 import paginate from "../utils/paginate";
@@ -15,7 +16,17 @@ class movies extends Component {
     pageSize: 4,
     currentPage: 1,
     activeGenre: null,
-    sortColumn: { path: "title", order: "asc" }
+    sortColumn: { path: "title", order: "asc" },
+    search: null
+  };
+
+  handleSearch = event => {
+    const value = event.target.value.toString();
+
+    console.log(value.trim("").length);
+    if (value.trim("").length > 0) this.setState({ activeGenre: null });
+
+    this.setState({ search: value.toLowerCase() });
   };
 
   componentDidMount() {
@@ -23,20 +34,30 @@ class movies extends Component {
   }
 
   handleGenreSelect = genreSelected => {
-    this.setState({ activeGenre: genreSelected, currentPage: 1 });
+    this.setState({ activeGenre: genreSelected, currentPage: 1, search: null });
   };
 
   filterMovies = movies => {
-    if (this.state.activeGenre == null) return movies;
+    if (this.state.activeGenre != null) {
+      const filteredMovies = movies.filter(
+        m => m.genre.name === this.state.activeGenre
+      );
 
-    const filteredMovies = movies.filter(
-      m => m.genre.name === this.state.activeGenre
-    );
+      return filteredMovies;
+    }
+    if (this.state.search != null) {
+      const searchedMovies = movies.filter(m =>
+        m.title.toLowerCase().includes(this.state.search)
+      );
 
-    return filteredMovies;
+      return searchedMovies;
+    }
+
+    return movies;
   };
 
   deleteHandler = id => {
+    deleteMovie(id);
     const movies = this.state.movies.filter(m => m._id !== id);
     this.setState({ movies });
   };
@@ -91,15 +112,29 @@ class movies extends Component {
           />
         </div>
         <div className="col">
-          <p>There are {totalCount} movies.</p>
+          <Link to="/movies/new" className="btn btn-primary">
+            New Movie
+          </Link>
+          <input
+            placeholder="Search..."
+            type="text"
+            className="form-control m-2"
+            onChange={this.handleSearch}
+            value={this.state.search}
+          />
+
           {totalCount > 0 ? (
-            <MoviesTable
-              movies={movies}
-              sortColumn={this.state.sortColumn}
-              onLike={this.handleLike}
-              onDelete={this.deleteHandler}
-              onSort={this.handleSort}
-            />
+            <React.Fragment>
+              <p>There are {totalCount} movies.</p>
+
+              <MoviesTable
+                movies={movies}
+                sortColumn={this.state.sortColumn}
+                onLike={this.handleLike}
+                onDelete={this.deleteHandler}
+                onSort={this.handleSort}
+              />
+            </React.Fragment>
           ) : (
             <p>There are no movies</p>
           )}
