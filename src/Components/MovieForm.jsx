@@ -1,8 +1,8 @@
 import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import { getGenres } from "../services/fakeGenreService";
-import { getMovie, saveMovie } from "../services/fakeMovieService";
+import { getGenres } from "../services/genreService";
+import { getMovie, saveMovie } from "../services/movieService";
 
 class MovieForm extends Form {
   state = {
@@ -30,35 +30,60 @@ class MovieForm extends Form {
       .label("Daily rental rate")
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.populateGenres();
+
+    await this.populateMovie();
+  }
+
+  async populateMovie() {
     const { match, history } = this.props;
     const data = { ...this.state.data };
-    const genres = getGenres();
-    this.setState({ genres });
 
     if (match.path !== "/movies/new") {
-      const movie = getMovie(match.params.id);
-
-      if (movie == null) return history.replace("/not-found");
-
-      data._id = movie._id;
-      data.title = movie.title;
-      data.numberInStock = movie.numberInStock;
-      data.genre = movie.genre.name;
-      data.rate = movie.dailyRentalRate;
-      this.setState({ data });
+      try {
+        const movie = await getMovie(match.params.id);
+        data._id = movie._id;
+        data.title = movie.title;
+        data.numberInStock = movie.numberInStock;
+        data.genre = movie.genre.name;
+        data.rate = movie.dailyRentalRate;
+        this.setState({ data });
+      } catch (error) {
+        return history.replace("/not-found");
+      }
     }
   }
 
-  doSubmit = () => {
-    saveMovie(this.state.data);
+  async populateGenres() {
+    const genres = await getGenres();
+    this.setState({ genres });
+  }
+
+  mapToDto = movie => {
+    const genre = this.state.genres.find(g => g.name === movie.genre)._id;
+
+    return {
+      _id: movie._id,
+      title: movie.title,
+      numberInStock: movie.numberInStock,
+      dailyRentalRate: movie.rate,
+      genreId: genre
+    };
+  };
+
+  doSubmit = async () => {
+    const movie = { ...this.state.data };
+    const movieDto = this.mapToDto(movie);
+    console.log(movieDto);
+    await saveMovie(movieDto);
 
     this.props.history.push("/movies");
   };
 
   render() {
     const { match, history } = this.props;
-    const genres = getGenres().map(g => g.name);
+    const { genres } = this.state;
     return (
       <div>
         <h1>Movie Form {match.params.id} </h1>

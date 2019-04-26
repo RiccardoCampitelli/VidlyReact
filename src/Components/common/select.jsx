@@ -6,13 +6,14 @@ const Select = ({ name, label, error, options, selected, ...rest }) => {
       <label htmlFor={name}>{label}</label>
       <select {...rest} name={name} id={name} className="form-control">
         <option value="" />
+
         {options.map(o => (
           <option
-            key={o}
-            value={o}
-            selected={o === selected ? "selected" : null}
+            key={o._id}
+            value={o.name}
+            selected={o.name === selected ? "selected" : null}
           >
-            {o}
+            {o.name}
           </option>
         ))}
       </select>

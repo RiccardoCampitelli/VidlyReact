@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { getMovies, deleteMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import { getMovies, deleteMovie } from "../services/movieService";
+import { getGenres } from "../services/genreService";
+import { Toast, toast } from "react-toastify";
 
 import { Link } from "react-router-dom";
 import ListFilter from "./common/listFilter";
@@ -17,24 +18,23 @@ class movies extends Component {
     currentPage: 1,
     activeGenre: null,
     sortColumn: { path: "title", order: "asc" },
-    search: null
+    search: ""
   };
 
   handleSearch = event => {
     const value = event.target.value.toString();
 
-    console.log(value.trim("").length);
     if (value.trim("").length > 0) this.setState({ activeGenre: null });
 
     this.setState({ search: value.toLowerCase() });
   };
 
-  componentDidMount() {
-    this.setState({ movies: getMovies(), genres: getGenres() });
+  async componentDidMount() {
+    this.setState({ movies: await getMovies(), genres: await getGenres() });
   }
 
   handleGenreSelect = genreSelected => {
-    this.setState({ activeGenre: genreSelected, currentPage: 1, search: null });
+    this.setState({ activeGenre: genreSelected, currentPage: 1, search: "" });
   };
 
   filterMovies = movies => {
@@ -56,10 +56,21 @@ class movies extends Component {
     return movies;
   };
 
-  deleteHandler = id => {
-    deleteMovie(id);
-    const movies = this.state.movies.filter(m => m._id !== id);
+  deleteHandler = async id => {
+    const originalMovies = this.state.movies;
+    const movies = originalMovies.filter(m => m._id !== id);
     this.setState({ movies });
+    try {
+      await deleteMovie(id);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+      }
+      toast.error("Error.");
+      const res = error.response;
+      console.log(res.data.errors);
+
+      this.setState({ movies: originalMovies });
+    }
   };
 
   handleLike = movie => {
