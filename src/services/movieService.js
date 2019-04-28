@@ -1,6 +1,7 @@
 import http from "./httpService";
 
-const apiEndpoint = "http://localhost:3900/api/movies";
+import { apiUrl } from "../config.json";
+const apiEndpoint = apiUrl + "/movies";
 
 export async function getMovies() {
   const { data } = await http.get(apiEndpoint);
@@ -21,8 +22,8 @@ export async function saveMovie(movie) {
   if (movie._id) {
     const body = { ...movie };
     delete body._id;
-    await http.put(apiEndpoint + "/" + movie._id, body);
+    return await http.put(apiEndpoint + "/" + movie._id, body);
   }
 
-  return http.post(apiEndpoint, movie);
+  return await http.post(apiEndpoint, movie);
 }

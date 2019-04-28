@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { getMovies, deleteMovie } from "../services/movieService";
 import { getGenres } from "../services/genreService";
-import { Toast, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { Link } from "react-router-dom";
 import ListFilter from "./common/listFilter";
@@ -66,8 +66,6 @@ class movies extends Component {
       if (error.response && error.response.status === 404) {
       }
       toast.error("Error.");
-      const res = error.response;
-      console.log(res.data.errors);
 
       this.setState({ movies: originalMovies });
     }
