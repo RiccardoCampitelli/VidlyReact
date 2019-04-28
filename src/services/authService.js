@@ -5,9 +5,20 @@ import { apiUrl } from "../config.json";
 const apiEndpoint = apiUrl + "/auth";
 const tokenKey = "token";
 
+http.setJwt(getJwt());
+
 export async function login(email, password) {
   const { data: jwt } = await http.post(apiEndpoint, { email, password });
   localStorage.setItem(tokenKey, jwt);
+}
+
+export function isAdmin() {
+  const user = getCurrentUser();
+  if (user) {
+    return user.isAdmin ? true : false;
+  }
+
+  return false;
 }
 
 export function logout() {
@@ -36,5 +47,6 @@ export default {
   logout,
   getCurrentUser,
   loginJwt,
-  getJwt
+  getJwt,
+  isAdmin
 };

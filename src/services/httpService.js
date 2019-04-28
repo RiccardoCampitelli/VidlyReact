@@ -1,8 +1,5 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import auth from "./authService";
-
-axios.defaults.headers.common["x-auth-token"] = auth.getJwt();
 
 axios.interceptors.response.use(
   res => {
@@ -20,9 +17,14 @@ axios.interceptors.response.use(
   }
 );
 
+export function setJwt(jwt) {
+  axios.defaults.headers.common["x-auth-token"] = jwt;
+}
+
 export default {
   get: axios.get,
   put: axios.put,
   post: axios.post,
-  delete: axios.delete
+  delete: axios.delete,
+  setJwt
 };

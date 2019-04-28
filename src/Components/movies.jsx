@@ -107,6 +107,7 @@ class movies extends Component {
 
   render() {
     const genreList = this.state.genres.map(g => g.name);
+    const { user } = this.props;
 
     const { totalCount, movies } = this.getPageData();
 
@@ -121,9 +122,11 @@ class movies extends Component {
           />
         </div>
         <div className="col">
-          <Link to="/movies/new" className="btn btn-primary">
-            New Movie
-          </Link>
+          {user && (
+            <Link to="/movies/new" className="btn btn-primary">
+              New Movie
+            </Link>
+          )}
           <input
             placeholder="Search..."
             type="text"
