@@ -25,6 +25,7 @@ class MovieForm extends Form {
       .min(0)
       .label("Number in stock"),
     rate: Joi.number()
+      .integer()
       .required()
       .min(0)
       .label("Daily rental rate")
@@ -75,7 +76,6 @@ class MovieForm extends Form {
   doSubmit = async () => {
     const movie = { ...this.state.data };
     const movieDto = this.mapToDto(movie);
-    console.log(movieDto);
     await saveMovie(movieDto);
 
     this.props.history.push("/movies");
@@ -94,13 +94,6 @@ class MovieForm extends Form {
           {this.renderInput("rate", "Rate", "number")}
           {this.renderButton("Save")}
         </form>
-
-        {/*  <button
-          className="btn btn-primary"
-          onClick={() => history.push("/movies")}
-        >
-          Save
-        </button> */}
       </div>
     );
   }
