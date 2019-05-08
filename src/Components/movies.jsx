@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getMovies, deleteMovie, saveMovie } from "../services/movieService";
+import { getMovies, deleteMovie } from "../services/movieService";
 import { getGenres } from "../services/genreService";
 import { toast } from "react-toastify";
 import auth from "../services/authService";
@@ -32,7 +32,6 @@ class movies extends Component {
 
   async componentDidMount() {
     this.setState({ movies: await getMovies(), genres: await getGenres() });
-    console.log(this.state.movies);
   }
 
   handleGenreSelect = genreSelected => {
