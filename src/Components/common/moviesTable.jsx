@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import Like from "./like";
 import Table from "./table";
 import auth from "../../services/authService";
 
@@ -10,17 +9,13 @@ class MoviesTable extends Component {
     {
       path: "title",
       label: "Title",
-      content: movie => <Link to={"/movies/" + movie._id}>{movie.title}</Link>
+      content: auth.isAdmin()
+        ? movie => <Link to={"/movies/" + movie._id}>{movie.title}</Link>
+        : null
     },
     { path: "genre.name", label: "Genre" },
     { path: "numberInStock", label: "Stock" },
-    { path: "dailyRentalRate", label: "Rate" },
-    {
-      key: "like",
-      content: movie => (
-        <Like isLiked={movie.liked} onClick={() => this.props.onLike(movie)} />
-      )
-    }
+    { path: "dailyRentalRate", label: "Rate" }
   ];
 
   deleteColumn = {

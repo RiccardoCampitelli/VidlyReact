@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { getMovies, deleteMovie } from "../services/movieService";
+import { getMovies, deleteMovie, saveMovie } from "../services/movieService";
 import { getGenres } from "../services/genreService";
 import { toast } from "react-toastify";
+import auth from "../services/authService";
 
 import { Link } from "react-router-dom";
 import ListFilter from "./common/listFilter";
@@ -31,6 +32,7 @@ class movies extends Component {
 
   async componentDidMount() {
     this.setState({ movies: await getMovies(), genres: await getGenres() });
+    console.log(this.state.movies);
   }
 
   handleGenreSelect = genreSelected => {
@@ -71,11 +73,11 @@ class movies extends Component {
     }
   };
 
-  handleLike = movie => {
+  handleLike = async movie => {
     const movies = [...this.state.movies];
     const index = movies.indexOf(movie);
     movies[index] = { ...movies[index] };
-    movies[index].liked = !movies[index].liked;
+    movies[index].isLiked = !movies[index].isLiked;
     this.setState({ movies });
   };
 
@@ -107,7 +109,6 @@ class movies extends Component {
 
   render() {
     const genreList = this.state.genres.map(g => g.name);
-    const { user } = this.props;
 
     const { totalCount, movies } = this.getPageData();
 
@@ -122,7 +123,7 @@ class movies extends Component {
           />
         </div>
         <div className="col">
-          {user && (
+          {auth.isAdmin() && (
             <Link to="/movies/new" className="btn btn-primary">
               New Movie
             </Link>
