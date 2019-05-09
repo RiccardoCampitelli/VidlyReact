@@ -113,7 +113,7 @@ class movies extends Component {
 
     return (
       <div className="row">
-        <div className="col-3">
+        <div className="col col-3">
           <ListFilter
             listItems={genreList}
             allSelector={"All Genres"}
@@ -121,7 +121,7 @@ class movies extends Component {
             genreSelect={this.handleGenreSelect}
           />
         </div>
-        <div className="col">
+        <div className="col col-9">
           {auth.isAdmin() && (
             <Link to="/movies/new" className="btn btn-primary">
               New Movie

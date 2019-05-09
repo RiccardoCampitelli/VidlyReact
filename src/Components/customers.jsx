@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import CustomersTable from "./common/customersTable";
 import { getCustomers } from "../services/customerService";
+import auth from "../services/authService";
+import { Link } from "react-router-dom";
 
 class Customers extends Component {
   state = {
@@ -22,7 +24,13 @@ class Customers extends Component {
   render() {
     return (
       <React.Fragment>
-        <h1>Customers</h1>
+        <h3>Customers</h3>
+        {auth.isAdmin() && (
+          <Link to="/customers/new" className="btn btn-primary">
+            New Customer
+          </Link>
+        )}
+
         <CustomersTable
           customers={this.state.customers}
           sortColumn={this.state.sortColumn}

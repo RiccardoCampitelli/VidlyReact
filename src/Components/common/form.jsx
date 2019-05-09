@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Input from "./input";
 import Joi from "joi-browser";
 import Select from "./select";
+import Checkbox from "./checkbox";
 
 class Form extends Component {
   state = {
@@ -52,6 +53,16 @@ class Form extends Component {
     const data = { ...this.state.data };
     data[input.name] = input.value;
     this.setState({ data, errors });
+  };
+
+  handleClick = ({ currentTarget: input }) => {
+    const data = { ...this.state.data };
+    data[input.name] = input.checked;
+    this.setState({ data });
+  };
+
+  renderCheckbox = (name, label) => {
+    return <Checkbox name={name} label={label} onClick={this.handleClick} />;
   };
 
   renderButton = label => {
