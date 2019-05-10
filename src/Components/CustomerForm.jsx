@@ -1,7 +1,8 @@
 import React from "react";
-import Form from "./form";
+import Form from "./common/form";
 import Joi from "joi-browser";
-import { saveCustomer } from "../../services/customerService";
+import { saveCustomer } from "../services/customerService";
+import { toast } from "react-toastify";
 
 class CustomerForm extends Form {
   state = {
@@ -27,6 +28,7 @@ class CustomerForm extends Form {
       const customer = { ...this.state.data };
       await saveCustomer(customer);
       this.props.history.push("/customers");
+      toast.success("Success.");
     } catch (error) {
       if (error.response && error.status === 400) {
         const errors = { ...this.state.errors };

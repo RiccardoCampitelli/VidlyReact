@@ -63,6 +63,7 @@ class movies extends Component {
     this.setState({ movies });
     try {
       await deleteMovie(id);
+      toast.warn("Deleted.");
     } catch (error) {
       if (error.response && error.response.status === 404) {
       }
@@ -122,18 +123,22 @@ class movies extends Component {
           />
         </div>
         <div className="col col-9">
-          {auth.isAdmin() && (
-            <Link to="/movies/new" className="btn btn-primary">
-              New Movie
-            </Link>
-          )}
-          <input
-            placeholder="Search..."
-            type="text"
-            className="form-control m-2"
-            onChange={this.handleSearch}
-            value={this.state.search}
-          />
+          <div className="row">
+            <div className="col col-sm-4">
+              {auth.isAdmin() && (
+                <Link to="/movies/new" className="btn btn-primary">
+                  New Movie
+                </Link>
+              )}
+              <input
+                placeholder="Search..."
+                type="text"
+                className="form-control m-2"
+                onChange={this.handleSearch}
+                value={this.state.search}
+              />
+            </div>
+          </div>
 
           {totalCount > 0 ? (
             <React.Fragment>

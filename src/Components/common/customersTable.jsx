@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import auth from "../../services/authService";
 import Table from "./table";
 import Gold from "./gold";
 
@@ -13,6 +14,25 @@ class CustomersTable extends Component {
     },
     { path: "phone", label: "Phone Number" }
   ];
+
+  deleteColumn = {
+    key: "delete",
+    content: customer => (
+      <button
+        className="btn btn-danger"
+        onClick={() => this.props.onDelete(customer._id)}
+      >
+        Delete
+      </button>
+    )
+  };
+
+  constructor() {
+    super();
+    if (auth.isAdmin()) {
+      this.columns.push(this.deleteColumn);
+    }
+  }
 
   render() {
     const { customers, sortColumn, onSort } = this.props;

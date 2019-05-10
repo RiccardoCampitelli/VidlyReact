@@ -16,3 +16,7 @@ export async function saveCustomer(customer) {
 
   return await http.post(apiEndpoint, customer);
 }
+
+export async function deleteCustomer(id) {
+  return await http.delete(apiEndpoint + "/" + id);
+}
