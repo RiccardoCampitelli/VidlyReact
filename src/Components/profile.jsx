@@ -1,10 +1,25 @@
-import React, { Component } from "react";
+import React from "react";
+import auth from "../services/authService";
 
-class Profile extends Component {
-  state = {};
-  render() {
-    return <h1>Profile</h1>;
-  }
-}
+const Profile = props => {
+  const user = auth.getCurrentUser();
+
+  console.log(user);
+  return (
+    <div className="row">
+      <div className="col col-centered col-sm-6">
+        <div className="card text-center">
+          <div className="card-header">
+            {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
+          </div>
+          <div className="card-body">
+            <p className="card-title">Email: {user.email}</p>
+            <p>Privileges: {user.isAdmin ? "Admin" : "Normal User"}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Profile;

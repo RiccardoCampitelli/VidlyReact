@@ -29,6 +29,7 @@ class RegisterForm extends Form {
       this.props.history.push("/login");
     } catch (ex) {
       console.log(ex.response);
+      console.log(ex);
     }
   };
 

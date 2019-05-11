@@ -83,7 +83,7 @@ class Customers extends Component {
     return (
       <React.Fragment>
         <div className="row">
-          <div className="col col-centered col-sm-5">
+          <div className="col col-centered col-sm-8">
             <h3>Customers</h3>
             {auth.isAdmin() && (
               <Link to="/customers/new" className="btn btn-primary">
