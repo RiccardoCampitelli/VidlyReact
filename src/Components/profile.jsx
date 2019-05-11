@@ -4,7 +4,6 @@ import auth from "../services/authService";
 const Profile = props => {
   const user = auth.getCurrentUser();
 
-  console.log(user);
   return (
     <div className="row">
       <div className="col col-centered col-sm-6">

@@ -1,8 +1,21 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import auth from "../services/authService";
 
 class Rentals extends Component {
   render() {
-    return <h1>Rentals</h1>;
+    return (
+      <div className="row">
+        <div className="col col-centered">
+          <h3>Rentals</h3>
+          {auth.getCurrentUser() && (
+            <Link to="/rentals/new" className="btn btn-primary">
+              New Movie
+            </Link>
+          )}
+        </div>
+      </div>
+    );
   }
 }
 

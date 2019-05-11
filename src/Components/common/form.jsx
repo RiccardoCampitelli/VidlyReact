@@ -3,6 +3,7 @@ import Input from "./input";
 import Joi from "joi-browser";
 import Select from "./select";
 import Checkbox from "./checkbox";
+import { Typeahead } from "react-bootstrap-typeahead";
 
 class Form extends Component {
   state = {
@@ -61,6 +62,14 @@ class Form extends Component {
     this.setState({ data });
   };
 
+  handleTypeahead = name => value => {
+    const state = { ...this.state };
+    /*   const obj = state[name.field]; */
+    state[name.field].push(...value);
+    this.setState({ ...state });
+    console.log(this.state);
+  };
+
   renderCheckbox = (name, label) => {
     return <Checkbox name={name} label={label} onClick={this.handleClick} />;
   };
@@ -70,6 +79,27 @@ class Form extends Component {
       <button disabled={this.validate()} className="btn btn-primary">
         {label}
       </button>
+    );
+  };
+
+  handleTypeaheadKeyDown = e => {
+    console.log(e.keyCode);
+    if (e.keyCode == 13) {
+      e.currentTarget.value = "";
+    }
+  };
+
+  renderTypeahead = ({ options, labelkey, field }) => {
+    return (
+      <Typeahead
+        id="typeahead"
+        labelKey={labelkey}
+        minLength={3}
+        onChange={this.handleTypeahead(field)}
+        options={options}
+        selectHintOnEnter={true}
+        onKeyDown={this.handleTypeaheadKeyDown}
+      />
     );
   };
 

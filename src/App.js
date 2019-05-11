@@ -17,6 +17,7 @@ import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 import CustomerForm from "./Components/CustomerForm";
 import Profile from "./Components/profile";
+import RentalForm from "./Components/rentalForm";
 
 class App extends Component {
   state = {};
@@ -43,6 +44,7 @@ class App extends Component {
             />
             <ProtectedRoute path="/customers/new" component={CustomerForm} />
             <Route path="/customers" component={Customers} />
+            <ProtectedRoute path="/rentals/new" component={RentalForm} />
             <Route path="/rentals" component={Rentals} />
             <ProtectedRoute path="/profile" component={Profile} />
             <Route path="/not-found" component={NotFound} />

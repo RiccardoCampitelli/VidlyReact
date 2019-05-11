@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
 ReactDOM.render(
   <BrowserRouter>
