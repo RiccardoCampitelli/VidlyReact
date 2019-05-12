@@ -9,7 +9,8 @@ class RentalForm extends Form {
     errors: {},
     movies: [],
     customers: [],
-    selectedMovies: []
+    selectedMovies: [],
+    selectedCustomer: {}
   };
 
   async componentDidMount() {
@@ -22,6 +23,19 @@ class RentalForm extends Form {
     }
   }
 
+  handleCustomerTypeahead = value => {
+    console.log(value[0]);
+    const selectedCustomer = { ...value[0] };
+    this.setState({ selectedCustomer });
+  };
+
+  handleMovieTypeahead = value => {
+    const state = { ...this.state };
+    /*   const obj = state[name.field]; */
+    state.selectedMovies.push(...value);
+    this.setState({ ...state });
+  };
+
   render() {
     const { selectedMovies } = this.state;
     return (
@@ -31,14 +45,23 @@ class RentalForm extends Form {
           {this.renderTypeahead({
             options: this.state.movies,
             labelkey: "title",
-            field: { field: "selectedMovies" }
+            name: "movies",
+            handleTypeahead: this.handleMovieTypeahead
           })}
           <ul>
             {selectedMovies.map((s, index) => {
-              console.log(s);
-              return <li>{s.title}</li>;
+              return <li key={index}>{s.title}</li>;
             })}
           </ul>
+          {this.renderTypeahead({
+            options: this.state.customers,
+            labelkey: "name",
+            name: "customer",
+            handleTypeahead: this.handleCustomerTypeahead
+          })}
+          {this.state.selectedCustomer ? (
+            <p>{this.state.selectedCustomer.name}</p>
+          ) : null}
         </div>
       </div>
     );

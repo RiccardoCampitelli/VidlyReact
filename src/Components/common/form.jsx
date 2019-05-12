@@ -67,7 +67,6 @@ class Form extends Component {
     /*   const obj = state[name.field]; */
     state[name.field].push(...value);
     this.setState({ ...state });
-    console.log(this.state);
   };
 
   renderCheckbox = (name, label) => {
@@ -83,22 +82,34 @@ class Form extends Component {
   };
 
   handleTypeaheadKeyDown = e => {
-    console.log(e.keyCode);
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       e.currentTarget.value = "";
     }
   };
 
-  renderTypeahead = ({ options, labelkey, field }) => {
+  handleTypeaheadChange = props => value => {
+    props.handler(value);
+
+    const instance = this[props.name].getInstance();
+    instance.clear();
+  };
+
+  renderTypeahead = ({ options, labelkey, name, handleTypeahead }) => {
     return (
       <Typeahead
-        id="typeahead"
+        ref={ref => (this[name] = ref)}
+        id={labelkey}
         labelKey={labelkey}
         minLength={3}
-        onChange={this.handleTypeahead(field)}
+        /*  onChange={this.handleTypeahead(field)} */
+        onChange={this.handleTypeaheadChange({
+          handler: handleTypeahead,
+          name: name
+        })}
         options={options}
         selectHintOnEnter={true}
-        onKeyDown={this.handleTypeaheadKeyDown}
+
+        /* onKeyDown={this.handleTypeaheadKeyDown} */
       />
     );
   };
