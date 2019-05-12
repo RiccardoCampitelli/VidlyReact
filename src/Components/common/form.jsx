@@ -94,23 +94,30 @@ class Form extends Component {
     instance.clear();
   };
 
-  renderTypeahead = ({ options, labelkey, name, handleTypeahead }) => {
+  renderTypeahead = ({
+    options,
+    placeholder,
+    labelkey,
+    name,
+    handleTypeahead
+  }) => {
     return (
-      <Typeahead
-        ref={ref => (this[name] = ref)}
-        id={labelkey}
-        labelKey={labelkey}
-        minLength={3}
-        /*  onChange={this.handleTypeahead(field)} */
-        onChange={this.handleTypeaheadChange({
-          handler: handleTypeahead,
-          name: name
-        })}
-        options={options}
-        selectHintOnEnter={true}
-
-        /* onKeyDown={this.handleTypeaheadKeyDown} */
-      />
+      <div className="form-group">
+        <label htmlFor={name}>{name}</label>
+        <Typeahead
+          ref={ref => (this[name] = ref)}
+          placeholder={placeholder}
+          id={labelkey}
+          labelKey={labelkey}
+          minLength={3}
+          onChange={this.handleTypeaheadChange({
+            handler: handleTypeahead,
+            name: name
+          })}
+          options={options}
+          selectHintOnEnter={true}
+        />
+      </div>
     );
   };
 

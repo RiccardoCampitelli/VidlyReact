@@ -3,6 +3,14 @@ import { Link } from "react-router-dom";
 import auth from "../services/authService";
 
 class Rentals extends Component {
+  state = {
+    rentals: [],
+    pageSize: 4,
+    currentPage: 1,
+    sortColumn: { path: "name", order: "asc" },
+    search: ""
+  };
+
   render() {
     return (
       <div className="row">
