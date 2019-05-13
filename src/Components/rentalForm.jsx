@@ -1,9 +1,11 @@
 import React from "react";
 import Form from "./common/form";
-import Joi from "joi-browser";
 import { getCustomers } from "../services/customerService";
 import { getMovies } from "../services/movieService";
+import { createRental } from "../services/rentalService";
+import Joi from "joi-browser";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
 class RentalForm extends Form {
   state = {
@@ -33,8 +35,24 @@ class RentalForm extends Form {
     }
   }
 
-  doSubmit = () => {
-    console.log("Submitted.");
+  doSubmit = async () => {
+    const { selectedCustomer, selectedMovies } = this.state.data;
+
+    try {
+      await Promise.all(
+        selectedMovies.map(async m => {
+          return await createRental({
+            customerId: selectedCustomer._id,
+            movieId: m._id
+          });
+        })
+      );
+      toast.success("Success.");
+      this.setState({ data: { selectedMovies: [], selectedCustomer: {} } });
+    } catch (err) {
+      console.log(err);
+      toast.warn("Something went wrong.");
+    }
   };
 
   handleCustomerTypeahead = value => {
