@@ -99,13 +99,17 @@ class Form extends Component {
     placeholder,
     labelkey,
     name,
-    handleTypeahead
+    handleTypeahead,
+    autofocus,
+    disabled
   }) => {
     return (
       <div className="form-group">
         <label htmlFor={name}>{name}</label>
         <Typeahead
           ref={ref => (this[name] = ref)}
+          autoFocus={autofocus}
+          disabled={disabled}
           placeholder={placeholder}
           id={labelkey}
           labelKey={labelkey}

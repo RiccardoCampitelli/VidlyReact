@@ -2,7 +2,7 @@ import React from "react";
 import Form from "./common/form";
 import { getCustomers } from "../services/customerService";
 import { getMovies } from "../services/movieService";
-import { createRental } from "../services/rentalService";
+import { createRental, getRentals } from "../services/rentalService";
 import Joi from "joi-browser";
 import _ from "lodash";
 import { toast } from "react-toastify";
@@ -12,7 +12,9 @@ class RentalForm extends Form {
     data: { selectedMovies: [], selectedCustomer: {} },
     errors: {},
     movies: [],
-    customers: []
+    customers: [],
+    rentals: [],
+    customerSelected: false
   };
 
   schema = {
@@ -29,11 +31,24 @@ class RentalForm extends Form {
     try {
       const movies = await getMovies();
       const customers = await getCustomers();
-      this.setState({ movies, customers });
+      const rentals = await getRentals();
+      this.setState({ movies, customers, rentals });
     } catch (error) {
       console.log(error);
     }
   }
+
+  getAvailableMovies = customer => {
+    const rentalsArray = [...this.state.rentals];
+    const rentedMovies = rentalsArray
+      .filter(r => r.customer._id === customer._id && !_.has(r, "dateReturned"))
+      .map(r => r.movie._id);
+
+    const moviesArray = [...this.state.movies];
+
+    const res = moviesArray.filter(m => !rentedMovies.includes(m._id));
+    return res;
+  };
 
   doSubmit = async () => {
     const { selectedCustomer, selectedMovies } = this.state.data;
@@ -48,23 +63,32 @@ class RentalForm extends Form {
         })
       );
       toast.success("Success.");
-      this.setState({ data: { selectedMovies: [], selectedCustomer: {} } });
+      this.setState({
+        data: { selectedMovies: [], selectedCustomer: {} },
+        customerSelected: false
+      });
     } catch (err) {
       console.log(err);
       toast.warn("Something went wrong.");
     }
   };
 
-  handleCustomerTypeahead = value => {
+  handleCustomerTypeahead = async value => {
     const data = { ...this.state.data };
     data.selectedCustomer = { ...value[0] };
-    this.setState({ data });
+    data.selectedMovies = [];
+    const movies = this.getAvailableMovies(data.selectedCustomer);
+
+    this.setState({ data, movies, customerSelected: true });
   };
 
   handleMovieTypeahead = value => {
     const state = { ...this.state };
 
     state.data.selectedMovies.push(...value);
+    const index = state.movies.indexOf(value[0]);
+    state.movies.splice(index, 1);
+
     this.setState({ ...state });
   };
 
@@ -78,6 +102,8 @@ class RentalForm extends Form {
               <form onSubmit={this.handleSubmit}>
                 {this.renderTypeahead({
                   options: this.state.customers,
+                  autofocus: true,
+                  disabled: false,
                   placeholder: "Select customer..",
                   labelkey: "name",
                   name: "Customer",
@@ -85,6 +111,8 @@ class RentalForm extends Form {
                 })}
                 {this.renderTypeahead({
                   options: this.state.movies,
+                  autofocus: false,
+                  disabled: !this.state.customerSelected,
                   placeholder: "Select Movie...",
                   labelkey: "title",
                   name: "Movies",

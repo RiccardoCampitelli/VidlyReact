@@ -5,7 +5,6 @@ axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.response.use(
   res => {
-    console.log(res);
     return res;
   },
   err => {
