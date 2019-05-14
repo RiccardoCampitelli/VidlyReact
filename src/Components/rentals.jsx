@@ -32,7 +32,8 @@ class Rentals extends Component {
       console.log(rental);
       await returnRental({
         customerId: rental.customer._id,
-        movieId: rental.movie._id
+        movieId: rental.movie._id,
+        dateOut: rental.dateOut
       });
       await this.loadRentals();
       toast.success("Returned.");

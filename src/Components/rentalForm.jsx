@@ -94,6 +94,7 @@ class RentalForm extends Form {
 
   render() {
     const { selectedMovies, selectedCustomer } = this.state.data;
+    const { customerSelected } = this.state;
     return (
       <div className="row">
         <div className="col col-centered col-sm-10">
@@ -123,16 +124,24 @@ class RentalForm extends Form {
             </div>
             <div className="col col-sm-8">
               <h3 className="text-center">New Rental</h3>
-              <div className="card text-center">
+              <div
+                className={
+                  customerSelected
+                    ? "card text-center text-white bg-primary"
+                    : "card text-center"
+                }
+              >
                 <div className="card-header">
                   {!_.isEmpty(selectedCustomer) ? (
-                    <p>{selectedCustomer.name}</p>
+                    <h4 className="font-weight-bold">
+                      {selectedCustomer.name}
+                    </h4>
                   ) : (
-                    <p>Select Customer</p>
+                    <h4 className="font-weight-bold">Select Customer</h4>
                   )}
                 </div>
 
-                <ul className="list-group list-group-flush">
+                <ul className="list-group list-group-flush text-dark">
                   {selectedMovies.map((s, index) => {
                     return (
                       <li className="list-group-item" key={index}>
